@@ -3,13 +3,14 @@ autohotkey config
 
 # Introduction
 
-It's a script which enable you use hot-area in windows just like the way you use it in ubuntu or osx
+It's a script which enable you use hot corner in windows just like the way you use it in ubuntu or osx
 
 
 # Usage
 
 ## AutoHotkey
 [download](https://www.autohotkey.com/download/)
+
 [document](https://www.autohotkey.com/docs/AutoHotkey.htm)
 
 ## install
