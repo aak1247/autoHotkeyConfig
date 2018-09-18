@@ -1,33 +1,90 @@
-
-;设置鼠标坐标系为整个桌面
+;set the coordinates system relative to the screen
 CoordMode, Mouse ,Screen
 
+
+;set screen info
+global leftEdge := 0, rightEdge := 1919, topEdge := 0, bottomEdge := 1079
+;set the time interval to getting mouse info. The less the value is, the less the hot area is sensitive
+timeInterval := 300
+
+
+;functions
+isLeftEdge(_xpos, _ypos){
+    if (_xpos == leftEdge and _ypos < bottomEdge - 20 and _ypos > topEdge + 20) {
+        return true
+    }
+    return false
+}
+
+isRightEdge(_xpos, _ypos){
+    maxY := bottomEdge - 20
+    minY := topEdge + 20
+    res := % _xpos == rightEdge and _ypos < maxY and _ypos > minY
+    if (res) {
+        return true
+    }
+    return false
+}
+
+isBottomEdge(_xpos, _ypos){
+    if (_ypos == %bottomEdge%  and _xpos < %rightEdge% - 20 and _xpos > %leftEdge% + 20) {
+        return true
+    }
+    return false
+}
+
+isTopEdge(_xpos, _ypos){
+    if (_ypos == %bottomEdge%  and _xpos < %rightEdge% - 20 and _xpos > %leftEdge% + 20) {
+        return true
+    }
+    return false
+}
+
+isTopLeftCorner(_xpos, _ypos){
+    if (_xpos == %leftEdge% and _ypos == %topEdge%) {
+        return true
+    }
+    return false
+}
+
+isTopRightCorner(_xpos, _ypos){
+    if (_xpos == %rightEdge% and _ypos == %topEdge%) {
+        return true
+    }
+    return false
+}
+
+isBottomLeftCorner(_xpos, _ypos){
+    if (_xpos == %leftEdge% and _ypos == %bottomEdge% ) {
+        return true
+    }
+    return false
+}
+
+isBottomRightCorner(_xpos, _ypos){
+    if (_xpos = %rightEdge% and _ypos = %bottomEdge% ) {
+        return true
+    }
+    return false
+}
+
 #Persistent
-;设置获取鼠标信息的时间间隔（ms）
-SetTimer, WatchCursor, 300
+SetTimer, WatchCursor, %timeInterval%
 return
 
 WatchCursor:
-GetKeyState, state, LButton
+GetKeyState, state, LButton 
 MouseGetPos, xpos, ypos, id, control 
 if(state = "U" ){
-    ;左上角热区显示多任务界面
-    ;修改xpos和ypos的值即可
-    if(xpos = -1080 and ypos = -663){
+    if ( isTopLeftCorner(xpos, ypos) ) {
         Send #{Tab}
-        MouseMove, 10, 10
-    ;TODO：增加其他热区
-    } else {
-        ;右边向右切换
-        if(xpos = 1919){
-            Send ^#{Right}
-            MouseMove, 1900, ypos
-            ;避免连续切换
-        ;左边缘向左切换（修改左边即可）
-        }else if(xpos <= -1072){
-            Send ^#{Left}
-            MouseMove, -1070, ypos
-        }
+        MouseMove, %leftEdge% + 10, %topEdge% + 10
+    } else if (isRightEdge(xpos, ypos)){
+        Send ^#{Right}
+        MouseMove, %rightEdge% - 20, ypos
+    } else if (isLeftEdge(xpos, ypos)){
+        Send ^#{Left}
+        MouseMove, %leftEdge% + 20, ypos
     }
 }
 return
